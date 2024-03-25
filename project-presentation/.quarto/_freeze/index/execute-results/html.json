@@ -1,0 +1,15 @@
+{
+  "hash": "7847dc1ce2c590db83b5cbe120cdcec9",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"project-presentation\"\nauthor: \"Amruh Tawil\"\nformat: revealjs\n---\n\n\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\n\n---\n\nThis is a Quarto website.\n\nTo learn more about Quarto websites visit <https://quarto.org/docs/websites>.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,299 @@
+---
+title: "Progress Presentation"
+author: "Spotify Surfers"
+format: revealjs
+---
+
+## PROJECT Roadmap
+
+::: {.fragment .fade-in}
+![](mini/DiagramProgress.png){.absolute top="150" left="0" width=150%}
+:::
+---
+
+## Using Spotify API Pt.1
+::: {.fragment .fade-in}
+Below is a function to **request** a token: 
+
+``` r
+# Request Access Token
+def get_token():
+    authString = clientID + ":" + clientSecret
+    authBytes = authString.encode("utf-8")
+    authBase64 = str(base64.b64encode(authBytes), "utf-8")
+
+    url = 'https://accounts.spotify.com/api/token'
+    headers = {
+                'Authorization': 'Basic ' + authBase64,
+                'Content-type': 'application/x-www-form-urlencoded'
+              }
+    data = {'grant_type': 'client_credentials'}
+
+    result = requests.post(url, headers = headers, data = data)
+    json_result = json.loads(result.content)
+
+    return json_result["access_token"]
+```
+:::
+
+---
+
+## Using Spotify API Pt.2
+
+::: {.fragment .fade-in}
+Below is a function to **get all tracks** in a playlist:
+
+``` r
+# Format Authorisation Header
+def getAuthorisationHeader(token):
+  return {"Authorization": "Bearer " + token}
+
+# Get Playlist Data
+def parsePlaylist(playlist_name, token):
+  # Search for the playlist ID by name
+  search_url = f'https://api.spotify.com/v1/search?q={playlist_name}&type=playlist'
+  headers = getAuthorisationHeader(token)
+  search_response = requests.get(search_url, headers=headers)
+        
+  # Get playlist ID of closest match
+  playlist_id = closest_match['id']
+  
+  # Retrieve playlist tracks using the playlist ID
+  playlist_tracks_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+  playlist_tracks_response = requests.get(playlist_tracks_url, 
+  headers=headers)
+```
+:::
+
+---
+
+## Experimenting with Spotify API - Pt.1
+
+::: incremental
+-   Started by setting **seed** genre to **Jazz**
+-   Used **Spotify API** to access the genre
+-   Printed 10 random **Jazz** songs
+
+::: {.fragment .fade-in}
+``` r
+genre = 'jazz' 
+
+# Getting songs for specified genre - Jazz
+recommendations = sp.recommendations(seed_genres=[genre], limit=10)
+
+for track in recommendations['tracks']:
+    print(track['name'], '-', track['artists'][0]['name'])
+```
+:::
+:::
+---
+
+## Experimenting with Spotify API - Pt.2
+
+::: incremental
+-   Started by setting **seed** genre to **Pop**
+-   Used Spotify's **"popularity score"** metric to gauge most popular songs in the genre
+-   Score depends on the **total number** + **recency** of plays
+
+::: {.fragment .fade-in}
+``` r
+genre = 'pop' 
+
+# Sorting songs by popularity + getting Top 10
+recommendations = sp.recommendations(seed_genres=[genre], limit=50)  
+tracks = sorted(recommendations['tracks'], key=lambda x: x['popularity'],
+reverse=True)
+tracks = tracks[:10]
+
+# Displaying the most popular songs that fit the genre criteria
+for track in tracks:
+    print(f"{track['name']} by {track['artists'][0]['name']} - Popularity: {track['popularity']}")
+```
+:::
+:::
+
+---
+
+## Experimenting with Spotify API - Pt.3
+
+::: incremental
+-   Started by accessing **"Today's Top Hits"** playlist for today
+-   **Count** no. times each artist appears + **sort** in ascending order
+-   Note: list depends on if artist **recently** released any music
+
+::: {.fragment .fade-in}
+``` r
+# Today's Top Hits Playlist
+top_tracks = sp.playlist_tracks('37i9dQZEVXbMDoHDwVN2tF', market='GB')
+
+# Extract artists from these tracks
+artists = {}
+for track in top_tracks['items']:
+    if track['track'] is not None:
+        for artist in track['track']['artists']:
+            artists[artist['name']] = artists.get(artist['name'], 0) + 1
+
+# Sort artists by their appearance count
+sorted_artists = sorted(artists.items(), key=lambda x: x[1], reverse=True)
+```
+:::
+:::
+---
+
+## Visualising some Data - Pt.1
+
+::: {.fragment .fade-in}
+Below is a function to **clean** + **format** the data into a df:
+
+``` r
+def get_name_counts(artist_names):
+  name_counts = Counter(artist_names)
+  ten_names = name_counts.most_common(10)
+  occur = {name: count for name, count in ten_names}
+  
+  df = pd.DataFrame.from_dict(occur, orient='index', columns=['occurences']
+  ).reset_index()
+  return df.rename(columns={'index': 'artist'})
+```
+:::
+::: {.fragment .fade-in}
+Below is a function to **plot** the data using the **ggplot** lib:
+
+
+``` r
+def create_plot(df):
+  p = (
+      ggplot(df, aes(x='artist', y='occurences')) +
+      geom_bar(stat='identity', fill='skyblue') +
+      theme(axis_text_x=element_text(angle=45,hjust=1)) +
+      labs(x='Artist', y='Occurrences', title='Top 10 Most Common Artists')
+      )
+  return p
+```
+:::
+---
+
+## Visualising some Data - Pt.2
+
+::: incremental
+
+-   Aim is to gather info on which artists are most frequently featured in **"Featured"** playlists
+-   Gathered data, formatted into a df and then used **plotnine** to graph it
+-   This provides a **basis** to form recommendations using **mainstream** artists 
+:::
+::: {.fragment .fade-in}
+The **plot** is shown on the next slide
+:::
+
+---
+
+## Visualising some Data - Pt.3 {auto-animate="true"}
+
+::: {.fragment .fade-in}
+
+![](mini/Artists-Featured.png){.absolute top="92" left="0" width="1280" height="960"}
+:::
+
+## Visualising some Data - Pt.4
+
+::: incremental
+-   Aim is to gather info on **10 most commonly appearing artists** in a given playlist
+-   Gathered data, formatted into a df and used **plotnine** to graph it
+-   We can use this to compare **overlaps** in artists to calculate a **"similarity score"**
+:::
+
+::: {.fragment .fade-in}
+The **plot** is shown on the next slide
+:::
+
+---
+
+## Visualising some Data - Pt.5 {auto-animate="true"}
+
+::: {.fragment .fade-in}
+
+![](mini/Artists.png){.absolute top="92" left="0" width="1280" height="960"}
+:::
+---
+
+## Challenges so Far...
+
+::: {.fragment .fade-in}
+We faced some **challenges** in setting this up:
+:::
+
+::: incremental
+-   Some artists were labelled as 'Various Artists'
+-   Indexing multiple layers + learning **API** controls
+:::
+::: {.fragment .fade-in}
+However, writing **functions** will help generalise further processes
+:::
+
+---
+
+## Elementary Web-Scraping Pt.1
+
+::: incremental
+
+-   Started by finding **table** of most similar songs
+-   Iterate over first 10 elements to get genre **name** and **link**
+-   Form a **list** of similar genres with playlist name
+
+::: {.fragment .fade-in}
+``` r
+similarGenres = []
+
+rows = sel.css('tr')[1:11]
+# Loop through first 10 rows
+for row in rows:
+    name = row.css('td.note a::text').get()
+    link = row.css('td.note a::attr(href)').get()
+    playlistName = getPlaylistName(name)
+    similarGenres.append([name,link, playlistName])
+```
+:::
+:::
+
+---
+
+## Elementary Web-Scraping Pt.2
+
+::: incremental
+-   Load in **credentials** and make **token request**
+-   Add song genre and all tracks in playlist as **key pair** entry
+-   **Note**: functions used below were defined previously
+
+::: {.fragment .fade-in}
+``` r
+with open('credentials.json','r') as file:
+    credentials = json.load(file)
+
+clientID = credentials["Client-ID"]
+clientSecret = credentials["Client-Secret"]
+
+token = get_token()
+
+songs = {}
+for genre in similarGenres:
+    songs[genre[0]] = parsePlaylist(genre[2], token)
+```
+:::
+:::
+
+---
+
+## More Challenges!!!
+
+::: {.fragment .fade-in}
+We faced more **challenges** in setting this up:
+:::
+
+::: incremental
+-   Playlists used were 'Songs by xxx' by **EveryNoise**
+-   Some playlists did not return a valid id - **None** object
+-   As a result, we could not form the df in time for today's presentation
+:::
+::: {.fragment .fade-in}
+Should be an easy fix by **replacing** missing playlists with next in similarity
+:::

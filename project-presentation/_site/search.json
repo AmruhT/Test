@@ -1,0 +1,275 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "project-presentation",
+    "section": "",
+    "text": "Turn off alarm\nGet out of bed"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "index.html#getting-up",
+    "href": "index.html#getting-up",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Getting up",
+    "text": "Getting up\n\n\n\n\n\ngraph LR;\n    graph LR;\n    style SpotifySurfers fill:#ffcc00,stroke:#333,stroke-width:2px,stroke-dasharray: 5px,rounded:true,font-family:Arial,font-size:16px,font-weight:bold;\n    style mainNodeText align:center;\n    style mainNodeTextText align:center;\n    SpotifySurfers[Spotify Surfers] --&gt;DataCollection[\"1. Data Collection\"];\n    DataCollection --&gt;DataCleaningPreProcessing[\"2. Data Cleaning & Pre-Processing\"];\n    DataCleaningPreProcessing --&gt;LinkingDataSources[\"3. Linking all Data Sources\"];\n    LinkingDataSources --&gt;DevelopingAlgorithm[\"4. Developing Algorithm\"];\n\n    classDef mainNodeText fill:#ffffff,stroke:#333,stroke-width:2px,rounded:true,font-family:Arial,font-size:16px,font-weight:bold;\n    class SpotifySurfers, mainNodeTextText;\n    class mainNodeTextText text-fill:black;\n\n    %% Adjust the node widths %%\n    style SpotifySurfers width:250px;\n    style DataCollection width:250px;\n    style DataCleaningPreProcessing width:250px;\n    style LinkingDataSources width:250px;\n    style DevelopingAlgorithm width:250px;"
+  },
+  {
+    "objectID": "index.html#going-to-sleep",
+    "href": "index.html#going-to-sleep",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Going to sleep",
+    "text": "Going to sleep\n\nGet in bed\nCount sheep"
+  },
+  {
+    "objectID": "index.html#project-roadmap",
+    "href": "index.html#project-roadmap",
+    "title": "Progress Presentation",
+    "section": "PROJECT Roadmap",
+    "text": "PROJECT Roadmap"
+  },
+  {
+    "objectID": "index.html#group-approach",
+    "href": "index.html#group-approach",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Group Approach",
+    "text": "Group Approach\nFor this week, we each decided to experiment with scraping different data sources to see what we could work with:\n\nRecommendations from Spotify\nGenres from EveryNoise\nArtists appearing in Featured Playlists\n\n…and much more"
+  },
+  {
+    "objectID": "index.html#spotify-recommendations",
+    "href": "index.html#spotify-recommendations",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Spotify Recommendations",
+    "text": "Spotify Recommendations"
+  },
+  {
+    "objectID": "index.html#genres",
+    "href": "index.html#genres",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Genres",
+    "text": "Genres\n# Query the user for desired genre\ngenre = input(\"What genre are you interested in? \")\n\nurl = 'https://everynoise.com/everynoise1d-' + alterGenre(genre) + '.html'\nresponse = requests.get(url)\nsel = Selector(text = response.text)"
+  },
+  {
+    "objectID": "index.html#using-spotify-api",
+    "href": "index.html#using-spotify-api",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Using Spotify API",
+    "text": "Using Spotify API\n# Request Access Token\ndef get_token():\n    authString = clientID + \":\" + clientSecret\n    authBytes = authString.encode(\"utf-8\")\n    authBase64 = str(base64.b64encode(authBytes), \"utf-8\")\n\n    url = 'https://accounts.spotify.com/api/token'\n    headers = {\n                'Authorization': 'Basic ' + authBase64,\n                'Content-type': 'application/x-www-form-urlencoded'\n              }\n    data = {'grant_type': 'client_credentials'}\n\n    result = requests.post(url, headers = headers, data = data)\n    json_result = json.loads(result.content)\n\n    return json_result[\"access_token\"]"
+  },
+  {
+    "objectID": "index.html#using-spotify-api-1",
+    "href": "index.html#using-spotify-api-1",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Using Spotify API",
+    "text": "Using Spotify API\n# Format Authorisation Header\ndef getAuthorisationHeader(token):\n  return {\"Authorization\": \"Bearer \" + token}\n\n# Get Playlist Data\ndef parsePlaylist(playlist_name, token):\n  # Search for the playlist ID by name\n  search_url = f'https://api.spotify.com/v1/search?q={playlist_name}&type=playlist'\n  headers = getAuthorisationHeader(token)\n  search_response = requests.get(search_url, headers=headers)\n        \n  # Get playlist ID of closest match\n  playlist_id = closest_match['id']\n  \n  # Retrieve playlist tracks using the playlist ID\n  playlist_tracks_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'\n  playlist_tracks_response = requests.get(playlist_tracks_url, \n  headers=headers)"
+  },
+  {
+    "objectID": "index.html#elementary-web-scraping",
+    "href": "index.html#elementary-web-scraping",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Elementary Web-Scraping",
+    "text": "Elementary Web-Scraping\nrows = sel.css('tr')[1:11]\nfor row in rows:\n    name = row.css('td.note a::text').get()\n    link = row.css('td.note a::attr(href)').get()\n    playlistName = getPlaylistName(name)\n    similarGenres.append([name,link, playlistName])"
+  },
+  {
+    "objectID": "index.html#putting-it-all-together",
+    "href": "index.html#putting-it-all-together",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Putting It All Together",
+    "text": "Putting It All Together\nwith open('credentials.json','r') as file:\n    credentials = json.load(file)\n\nclientID = credentials[\"Client-ID\"]\nclientSecret = credentials[\"Client-Secret\"]\n\ntoken = get_token()\n\nsongs = {}\nfor genre in similarGenres:\n    songs[genre[0]] = parsePlaylist(genre[2], token)"
+  },
+  {
+    "objectID": "index.html#outputs",
+    "href": "index.html#outputs",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Outputs",
+    "text": "Outputs"
+  },
+  {
+    "objectID": "index.html#progress-made-this-week",
+    "href": "index.html#progress-made-this-week",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Progress Made This Week",
+    "text": "Progress Made This Week\nThis week we were able to begin collecting data for our project. Out main data sources have remained the same, being:\n\nSpotify’s API\nAllMusic\nEveryNoise\n\n…and much more"
+  },
+  {
+    "objectID": "index.html#point-1",
+    "href": "index.html#point-1",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Point 1",
+    "text": "Point 1\nFirstly, we have managed to collect some data on the artists commonly found in Spotified’s featured playlists Top 10 Most Common Artists on featured spotify playlists. This was collected first through the endpoint given in the API documentation for the current featured playlists on Spotify. The data itself had to be indexed several times due to having multiple layers of lists of dictionaries before you could reach the key artist name. This was then organised by using the count function in python. Finally. it was formatted into a dictionary and pandas dataframe before being converted into a plotnine graph as shown above."
+  },
+  {
+    "objectID": "index.html#point-1-1",
+    "href": "index.html#point-1-1",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Point 1",
+    "text": "Point 1\nThe main challenge here was the indexing of multiple layers as well as learning the API controls. Also an issue that cropped up was the appearance of ‘Various Artists’ in the name key. We attempted to solve this by checking for the first element the value associated with the key but it returned the same value meaning alternate sites will have to be used for the songs associated with these songs for further clarity."
+  },
+  {
+    "objectID": "index.html#point-1-2",
+    "href": "index.html#point-1-2",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Point 1",
+    "text": "Point 1\nThe main challenge here was the indexing of multiple layers as well as learning the API controls. Also an issue that cropped up was the appearance of ‘Various Artists’ in the name key. We attempted to solve this by checking for the first element the value associated with the key but it returned the same value meaning alternate sites will have to be used for the songs associated with these songs for further clarity."
+  },
+  {
+    "objectID": "index.html#point-2",
+    "href": "index.html#point-2",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Point 2",
+    "text": "Point 2\nSecondly, we collected data on music genres from the site Every Noise At Once. We were able to scrape the 10 most similar genres for a given user provided genre for every noise in the site. Then it was scraping the songs from the Spotify playlist that every noise at once uses for each of the 10 genres to provide examples of suggestions in our recommendation system. This will be converted into a Pandas dataframe to better frame the data."
+  },
+  {
+    "objectID": "index.html#point-2-1",
+    "href": "index.html#point-2-1",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Point 2",
+    "text": "Point 2\nSome challenges with regards to this was the scraping and gathering the right css selectors. Additionally, some of the Spotify playlists do not match with the corresponding id’s. This is something I need to fix, as I currently do not have any visual data to show as a result."
+  },
+  {
+    "objectID": "index.html#point-3",
+    "href": "index.html#point-3",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Point 3",
+    "text": "Point 3\nThirdly, we experimented with data collection of other aspects of The Spotify API. These included popularity measures which could be further used as part of our recommendation system. Lastly, we’ve also explored some ideas with regards to the timeline of music where there may be possible opportunities to group different time periods together and classify them as such before putting them into a pandas dataframe for analysis or recommendation depending on user inputs. Further analysis of music such as tempo characteristics, beats can be used. One opportunity we seek to explore more is to compare the overlaps of certain artists amongst different playlists and genres to generate a similarity score that can be calculated."
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api",
+    "href": "index.html#experimenting-with-spotify-api",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Experimenting with Spotify API",
+    "text": "Experimenting with Spotify API\n\nStarted by setting genre to Jazz\nUsed Spotify API to access the Jazz genre\nPrinted 10 random Jazz songs\n\ngenre = 'jazz' \n\n# Getting songs for the specified genre\nrecommendations = sp.recommendations(seed_genres=[genre], limit=10)\nprint(\"Jazz Recommendations solely based on genre\")\nfor track in recommendations['tracks']:\n    print(track['name'], '-', track['artists'][0]['name'])"
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api-pt.1",
+    "href": "index.html#experimenting-with-spotify-api-pt.1",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Experimenting with Spotify API Pt.1",
+    "text": "Experimenting with Spotify API Pt.1\n\nStarted by setting genre to Jazz\nUsed Spotify API to access the Jazz genre\nPrinted 10 random Jazz songs\n\ngenre = 'jazz' \n\n# Getting songs for specified genre - Jazz\nrecommendations = sp.recommendations(seed_genres=[genre], limit=10)\nprint(\"Jazz Recommendations solely based on genre\")\nfor track in recommendations['tracks']:\n    print(track['name'], '-', track['artists'][0]['name'])"
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api-pt.2",
+    "href": "index.html#experimenting-with-spotify-api-pt.2",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Experimenting with Spotify API Pt.2",
+    "text": "Experimenting with Spotify API Pt.2\ngenre = 'pop' \n\n# Forming recommendations based on popularity score\nrecommendations = sp.recommendations(seed_genres=[genre], limit=50)  \n#Sorting songs by popularity\ntracks = sorted(recommendations['tracks'], key=lambda x: x['popularity'], reverse=True)\ntracks = tracks[:10]#getting the top 10\n\n#Displaying the most popular songs that fit the genre criteria\nfor track in tracks:\n    print(f\"{track['name']} by {track['artists'][0]['name']} - Popularity: {track['popularity']}\")"
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api---pt.1",
+    "href": "index.html#experimenting-with-spotify-api---pt.1",
+    "title": "Progress Presentation",
+    "section": "Experimenting with Spotify API - Pt.1",
+    "text": "Experimenting with Spotify API - Pt.1\n\n\nStarted by setting seed genre to Jazz\nUsed Spotify API to access the genre\nPrinted 10 random Jazz songs\n\n\ngenre = 'jazz' \n\n# Getting songs for specified genre - Jazz\nrecommendations = sp.recommendations(seed_genres=[genre], limit=10)\n\nfor track in recommendations['tracks']:\n    print(track['name'], '-', track['artists'][0]['name'])"
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api---pt.2",
+    "href": "index.html#experimenting-with-spotify-api---pt.2",
+    "title": "Progress Presentation",
+    "section": "Experimenting with Spotify API - Pt.2",
+    "text": "Experimenting with Spotify API - Pt.2\n\n\nStarted by setting seed genre to Pop\nUsed Spotify’s “popularity score” metric to gauge most popular songs in the genre\nScore depends on the total number + recency of plays\n\n\ngenre = 'pop' \n\n# Sorting songs by popularity + getting Top 10\nrecommendations = sp.recommendations(seed_genres=[genre], limit=50)  \ntracks = sorted(recommendations['tracks'], key=lambda x: x['popularity'],\nreverse=True)\ntracks = tracks[:10]\n\n# Displaying the most popular songs that fit the genre criteria\nfor track in tracks:\n    print(f\"{track['name']} by {track['artists'][0]['name']} - Popularity: {track['popularity']}\")"
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api---pt.3",
+    "href": "index.html#experimenting-with-spotify-api---pt.3",
+    "title": "Progress Presentation",
+    "section": "Experimenting with Spotify API - Pt.3",
+    "text": "Experimenting with Spotify API - Pt.3\n\n\nStarted by accessing “Today’s Top Hits” playlist for today\nCount no. times each artist appears + sort in ascending order\nNote: list depends on if artist recently released any music\n\n\n# Today's Top Hits Playlist\ntop_tracks = sp.playlist_tracks('37i9dQZEVXbMDoHDwVN2tF', market='GB')\n\n# Extract artists from these tracks\nartists = {}\nfor track in top_tracks['items']:\n    if track['track'] is not None:\n        for artist in track['track']['artists']:\n            artists[artist['name']] = artists.get(artist['name'], 0) + 1\n\n# Sort artists by their appearance count\nsorted_artists = sorted(artists.items(), key=lambda x: x[1], reverse=True)"
+  },
+  {
+    "objectID": "index.html#visualising-some-data---pt.1",
+    "href": "index.html#visualising-some-data---pt.1",
+    "title": "Progress Presentation",
+    "section": "Visualising some Data - Pt.1",
+    "text": "Visualising some Data - Pt.1\n\nBelow is a function to clean + format the data into a df:\ndef get_name_counts(artist_names):\n  name_counts = Counter(artist_names)\n  ten_names = name_counts.most_common(10)\n  occur = {name: count for name, count in ten_names}\n  \n  df = pd.DataFrame.from_dict(occur, orient='index', columns=['occurences']\n  ).reset_index()\n  return df.rename(columns={'index': 'artist'})\n\n\nBelow is a function to plot the data using the ggplot lib:\ndef create_plot(df):\n  p = (\n      ggplot(df, aes(x='artist', y='occurences')) +\n      geom_bar(stat='identity', fill='skyblue') +\n      theme(axis_text_x=element_text(angle=45,hjust=1)) +\n      labs(x='Artist', y='Occurrences', title='Top 10 Most Common Artists')\n      )\n  return p"
+  },
+  {
+    "objectID": "index.html#visualising-some-data---pt.2",
+    "href": "index.html#visualising-some-data---pt.2",
+    "title": "Progress Presentation",
+    "section": "Visualising some Data - Pt.2",
+    "text": "Visualising some Data - Pt.2\n\n\nAim is to gather info on which artists are most frequently featured in “Featured” playlists\nGathered data, formatted into a df and then used plotnine to graph it\nThis provides a basis to form recommendations using mainstream artists\n\n\n\nThe plot is shown on the next slide"
+  },
+  {
+    "objectID": "index.html#visualising-some-data---pt.3",
+    "href": "index.html#visualising-some-data---pt.3",
+    "title": "Progress Presentation",
+    "section": "Visualising some Data - Pt.3",
+    "text": "Visualising some Data - Pt.3"
+  },
+  {
+    "objectID": "index.html#visualising-some-data---pt.4",
+    "href": "index.html#visualising-some-data---pt.4",
+    "title": "Progress Presentation",
+    "section": "Visualising some Data - Pt.4",
+    "text": "Visualising some Data - Pt.4\n\n\nAim is to gather info on 10 most commonly appearing artists in a given playlist\nGathered data, formatted into a df and used plotnine to graph it\nWe can use this to compare overlaps in artists to calculate a “similarity score”\n\n\n\nThe plot is shown on the next slide"
+  },
+  {
+    "objectID": "index.html#visualising-some-data---pt.5",
+    "href": "index.html#visualising-some-data---pt.5",
+    "title": "Progress Presentation",
+    "section": "Visualising some Data - Pt.5",
+    "text": "Visualising some Data - Pt.5"
+  },
+  {
+    "objectID": "index.html#challenges",
+    "href": "index.html#challenges",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Challenges",
+    "text": "Challenges\nWe faced some challenges in setting this up:\n\nSome artists were labelled as ‘Various Artists’\nIndexing multiple layers + learning API controls\n\nHowever, writing functions will help generalise further processes"
+  },
+  {
+    "objectID": "index.html#using-spotify-api-pt.1",
+    "href": "index.html#using-spotify-api-pt.1",
+    "title": "Progress Presentation",
+    "section": "Using Spotify API Pt.1",
+    "text": "Using Spotify API Pt.1\n\nBelow is a function to request a token:\n# Request Access Token\ndef get_token():\n    authString = clientID + \":\" + clientSecret\n    authBytes = authString.encode(\"utf-8\")\n    authBase64 = str(base64.b64encode(authBytes), \"utf-8\")\n\n    url = 'https://accounts.spotify.com/api/token'\n    headers = {\n                'Authorization': 'Basic ' + authBase64,\n                'Content-type': 'application/x-www-form-urlencoded'\n              }\n    data = {'grant_type': 'client_credentials'}\n\n    result = requests.post(url, headers = headers, data = data)\n    json_result = json.loads(result.content)\n\n    return json_result[\"access_token\"]"
+  },
+  {
+    "objectID": "index.html#using-spotify-api-pt.2",
+    "href": "index.html#using-spotify-api-pt.2",
+    "title": "Progress Presentation",
+    "section": "Using Spotify API Pt.2",
+    "text": "Using Spotify API Pt.2\n\nBelow is a function to get all tracks in a playlist:\n# Format Authorisation Header\ndef getAuthorisationHeader(token):\n  return {\"Authorization\": \"Bearer \" + token}\n\n# Get Playlist Data\ndef parsePlaylist(playlist_name, token):\n  # Search for the playlist ID by name\n  search_url = f'https://api.spotify.com/v1/search?q={playlist_name}&type=playlist'\n  headers = getAuthorisationHeader(token)\n  search_response = requests.get(search_url, headers=headers)\n        \n  # Get playlist ID of closest match\n  playlist_id = closest_match['id']\n  \n  # Retrieve playlist tracks using the playlist ID\n  playlist_tracks_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'\n  playlist_tracks_response = requests.get(playlist_tracks_url, \n  headers=headers)"
+  },
+  {
+    "objectID": "index.html#challenges-so-far",
+    "href": "index.html#challenges-so-far",
+    "title": "Progress Presentation",
+    "section": "Challenges so Far…",
+    "text": "Challenges so Far…\n\nWe faced some challenges in setting this up:\n\n\n\nSome artists were labelled as ‘Various Artists’\nIndexing multiple layers + learning API controls\n\n\n\nHowever, writing functions will help generalise further processes"
+  },
+  {
+    "objectID": "index.html#elementary-web-scraping-pt.1",
+    "href": "index.html#elementary-web-scraping-pt.1",
+    "title": "Progress Presentation",
+    "section": "Elementary Web-Scraping Pt.1",
+    "text": "Elementary Web-Scraping Pt.1\n\n\nStarted by finding table of most similar songs\nIterate over first 10 elements to get genre name and link\nForm a list of similar genres with playlist name\n\n\nsimilarGenres = []\n\nrows = sel.css('tr')[1:11]\n# Loop through first 10 rows\nfor row in rows:\n    name = row.css('td.note a::text').get()\n    link = row.css('td.note a::attr(href)').get()\n    playlistName = getPlaylistName(name)\n    similarGenres.append([name,link, playlistName])"
+  },
+  {
+    "objectID": "index.html#elementary-web-scraping-pt.2",
+    "href": "index.html#elementary-web-scraping-pt.2",
+    "title": "Progress Presentation",
+    "section": "Elementary Web-Scraping Pt.2",
+    "text": "Elementary Web-Scraping Pt.2\n\n\nLoad in credentials and make token request\nAdd song genre and all tracks in playlist as key pair entry\nNote: functions used below were defined previously\n\n\nwith open('credentials.json','r') as file:\n    credentials = json.load(file)\n\nclientID = credentials[\"Client-ID\"]\nclientSecret = credentials[\"Client-Secret\"]\n\ntoken = get_token()\n\nsongs = {}\nfor genre in similarGenres:\n    songs[genre[0]] = parsePlaylist(genre[2], token)"
+  },
+  {
+    "objectID": "index.html#more-challenges",
+    "href": "index.html#more-challenges",
+    "title": "Progress Presentation",
+    "section": "More Challenges!!!",
+    "text": "More Challenges!!!\n\nWe faced more challenges in setting this up:\n\n\n\nPlaylists used were ‘Songs by xxx’ by EveryNoise\nSome playlists did not return a valid id - None object\nAs a result, we could not form the df in time for today’s presentation\n\n\n\nShould be an easy fix by replacing missing playlists with next in similarity"
+  },
+  {
+    "objectID": "index.html#experimenting-with-spotify-api---pt.4",
+    "href": "index.html#experimenting-with-spotify-api---pt.4",
+    "title": "Spotify Surfers Progress Presentation",
+    "section": "Experimenting with Spotify API - Pt.4",
+    "text": "Experimenting with Spotify API - Pt.4"
+  }
+]
